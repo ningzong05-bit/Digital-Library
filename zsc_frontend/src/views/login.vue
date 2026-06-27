@@ -144,10 +144,15 @@ function getCode() {
   getCodeImg().then(res => {
     captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
     if (captchaEnabled.value) {
-      codeUrl.value = "data:image/gif;base64," + res.img
+      codeUrl.value = getCaptchaDataUrl(res.img)
       loginForm.value.uuid = res.uuid
     }
   })
+}
+
+function getCaptchaDataUrl(img) {
+  const mime = img?.startsWith("/9j/") ? "image/jpeg" : img?.startsWith("iVBOR") ? "image/png" : "image/gif"
+  return `data:${mime};base64,${img || ""}`
 }
 
 function getCookie() {
