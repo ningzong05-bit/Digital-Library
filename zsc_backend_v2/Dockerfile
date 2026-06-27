@@ -8,8 +8,9 @@ FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 COPY --from=build /app/zsc-admin/target/zsc-admin.jar app.jar
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 
 ENV JAVA_OPTS=""
 EXPOSE 8081
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["sh", "/app/docker-entrypoint.sh"]

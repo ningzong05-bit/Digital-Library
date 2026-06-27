@@ -2,9 +2,13 @@
   command = "npm run build:prod"
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[redirects]]
   from = "/prod-api/*"
-  to = "https://ningzong-digital-library-api.onrender.com/:splat"
+  to = "/.netlify/functions/prod-api?path=:splat"
   status = 200
   force = true
 

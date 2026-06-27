@@ -9,11 +9,47 @@ Netlify site:
 - Site: `ningzong-digital-library`
 - URL: `http://ningzong-digital-library.netlify.app`
 
-The frontend proxies `/prod-api/*` to the Render backend URL configured in `zsc_frontend/netlify.toml` and `zsc_frontend/vercel.json`.
+On Netlify, the frontend proxies `/prod-api/*` through `zsc_frontend/netlify/functions/prod-api.js`.
+Set the Netlify environment variable `RAILWAY_API_URL` to the public Railway backend URL after Railway generates the domain.
 
-## Backend
+## Backend on Railway
 
-The backend is configured for Render through `render.yaml`.
+Railway is the preferred backend target for this project because it can host the Spring Boot service, MySQL, and Redis in the same project.
+
+Recommended Railway services:
+
+- `digital-library-api`: deploy from GitHub, root directory `zsc_backend_v2`
+- `MySQL`: Railway database service
+- `Redis`: Railway database service
+
+The backend reads Railway-provided variables automatically:
+
+| Railway service | Variables used by backend |
+| --- | --- |
+| MySQL | `MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE` |
+| Redis | `REDISHOST`, `REDISPORT`, `REDISUSER`, `REDISPASSWORD` |
+
+The backend also supports explicit override variables:
+
+| Key | Purpose |
+| --- | --- |
+| `MYSQL_JDBC_URL` | Full JDBC URL override |
+| `MYSQL_USERNAME` | MySQL username override |
+| `MYSQL_PASSWORD` | MySQL password override |
+| `REDIS_HOST` | Redis host override |
+| `REDIS_PORT` | Redis port override |
+| `REDIS_USERNAME` | Redis username override |
+| `REDIS_PASSWORD` | Redis password override |
+| `TOKEN_SECRET` | JWT signing secret |
+
+After the Railway backend generates a public domain, update the frontend proxy target in:
+
+- Netlify: set `RAILWAY_API_URL` to the public backend URL
+- Vercel alternative: update `zsc_frontend/vercel.json`
+
+## Backend on Render
+
+Render remains available as a fallback through `render.yaml`.
 
 Render Blueprint URL:
 
