@@ -16,13 +16,37 @@ Set the Netlify environment variable `RAILWAY_API_URL` to the public Railway bac
 
 Railway is the preferred backend target for this project because it can host the Spring Boot service, MySQL, and Redis in the same project.
 
-Recommended Railway services:
+Recommended Railway project services:
 
 - `digital-library-api`: deploy from GitHub, root directory `zsc_backend_v2`
 - `MySQL`: Railway database service
 - `Redis`: Railway database service
 
-The backend reads Railway-provided variables automatically:
+Create the backend service from GitHub with:
+
+- Repository: `ningzong05-bit/Digital-Library`
+- Branch: `main`
+- Root directory: `zsc_backend_v2`
+- Builder: Dockerfile
+
+After adding MySQL and Redis in the same Railway project, add these variables to the `digital-library-api` service.
+If Railway gives the database services different names, replace `MySQL` or `Redis` in the reference values with the actual service names.
+
+| Key | Value |
+| --- | --- |
+| `MYSQLHOST` | `${{MySQL.MYSQLHOST}}` |
+| `MYSQLPORT` | `${{MySQL.MYSQLPORT}}` |
+| `MYSQLUSER` | `${{MySQL.MYSQLUSER}}` |
+| `MYSQLPASSWORD` | `${{MySQL.MYSQLPASSWORD}}` |
+| `MYSQLDATABASE` | `${{MySQL.MYSQLDATABASE}}` |
+| `REDISHOST` | `${{Redis.REDISHOST}}` |
+| `REDISPORT` | `${{Redis.REDISPORT}}` |
+| `REDISUSER` | `${{Redis.REDISUSER}}` |
+| `REDISPASSWORD` | `${{Redis.REDISPASSWORD}}` |
+| `TOKEN_SECRET` | A long random production secret |
+| `ZSC_PROFILE` | `/tmp/zsc/uploadPath` |
+
+The backend startup script converts these Railway variables into the Spring Boot configuration used by the app:
 
 | Railway service | Variables used by backend |
 | --- | --- |
@@ -86,10 +110,11 @@ The current local data export is:
 database/zsc_local_full_2026-06-27.sql
 ```
 
-Import it into the production MySQL database before deploying the backend:
+Import it into the Railway MySQL database before using the app.
+From the Railway MySQL service, open the connection details and use the public host/port values:
 
 ```powershell
-mysql -u YOUR_USER -p --default-character-set=utf8mb4 < database\zsc_local_full_2026-06-27.sql
+mysql -h YOUR_RAILWAY_MYSQL_HOST -P YOUR_RAILWAY_MYSQL_PORT -u YOUR_RAILWAY_MYSQL_USER -p YOUR_RAILWAY_MYSQL_DATABASE --default-character-set=utf8mb4 < database\zsc_local_full_2026-06-27.sql
 ```
 
 Supabase is not used for this deployment because the project currently depends on MySQL-specific schema and configuration.
