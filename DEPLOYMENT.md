@@ -117,6 +117,24 @@ From the Railway MySQL service, open the connection details and use the public h
 mysql -h YOUR_RAILWAY_MYSQL_HOST -P YOUR_RAILWAY_MYSQL_PORT -u YOUR_RAILWAY_MYSQL_USER -p YOUR_RAILWAY_MYSQL_DATABASE --default-character-set=utf8mb4 < database\zsc_local_full_2026-06-27.sql
 ```
 
+If the public proxy is unstable, deploy the one-time importer service from this repository:
+
+- Repository: `ningzong05-bit/Digital-Library`
+- Branch: `main`
+- Root directory: `database`
+- Builder: Dockerfile
+
+Set these importer service variables:
+
+| Key | Value |
+| --- | --- |
+| `MYSQLHOST` | `${{MySQL.MYSQLHOST}}` |
+| `MYSQLPORT` | `${{MySQL.MYSQLPORT}}` |
+| `MYSQLUSER` | `${{MySQL.MYSQLUSER}}` |
+| `MYSQLPASSWORD` | `${{MySQL.MYSQLPASSWORD}}` |
+
+The importer prints `Import complete` when finished. Delete or stop the importer service after the data is imported.
+
 Supabase is not used for this deployment because the project currently depends on MySQL-specific schema and configuration.
 
 ## Vercel Alternative
