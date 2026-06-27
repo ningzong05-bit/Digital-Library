@@ -1,0 +1,33 @@
+# Dependency directories
+**/node_modules/
+
+# Build outputs
+**/target/
+**/dist/
+**/tmp-jar-check*/
+
+# Logs and runtime files
+**/logs/
+*.log
+*.err.log
+dump.rdb
+
+# Local IDE/system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local backup archives
+备份/
+*.zip
+
+# Legacy picture backend kept locally but excluded from current library delivery
+zsc_backend_v2/public-picture/
+zsc_backend_v2/zsc-module/src/main/java/com/publicpicturebackend/
+zsc_backend_v2/zsc-module/src/main/resources/biz/
+zsc_backend_v2/zsc-module/src/main/resources/mapper/PictureMapper.xml
+zsc_backend_v2/zsc-module/src/main/resources/mapper/SpaceMapper.xml
+zsc_backend_v2/zsc-module/src/main/resources/mapper/SpaceUserMapper.xml
+zsc_backend_v2/zsc-module/src/main/resources/mapper/UserMapper.xml
+zsc_backend_v2/zsc-module/src/main/resources/static/
