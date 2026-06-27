@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: ningzong-digital-library-api
+    runtime: docker
+    plan: free
+    region: singapore
+    rootDir: zsc_backend_v2
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: MYSQL_URL
+        sync: false
+      - key: MYSQL_USERNAME
+        sync: false
+      - key: MYSQL_PASSWORD
+        sync: false
+      - key: TOKEN_SECRET
+        generateValue: true
+      - key: REDIS_HOST
+        fromService:
+          type: keyvalue
+          name: ningzong-digital-library-redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: keyvalue
+          name: ningzong-digital-library-redis
+          property: port
+      - key: REDIS_PASSWORD
+        value: ""
+      - key: REDIS_DATABASE
+        value: "0"
+      - key: ZSC_PROFILE
+        value: /tmp/zsc/uploadPath
+  - type: keyvalue
+    name: ningzong-digital-library-redis
+    plan: free
+    region: singapore
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []

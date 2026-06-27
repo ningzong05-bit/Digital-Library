@@ -7,7 +7,7 @@ zsc:
   # 版权年份
   copyrightYear: 2026
   # 文件路径 示例（Windows 配置 D:/zsc/uploadPath，Linux 配置 /home/zsc/uploadPath）
-  profile: D:/zsc/uploadPath
+  profile: ${ZSC_PROFILE:/tmp/zsc/uploadPath}
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
@@ -16,7 +16,7 @@ zsc:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 8081
+  port: ${PORT:8081}
   servlet:
     # 应用的访问路径
     context-path: /
@@ -72,13 +72,13 @@ spring:
     # redis 配置
     redis:
       # 地址
-      host: localhost
+      host: ${REDIS_HOST:localhost}
       # 端口，默认为6379
-      port: 6379
+      port: ${REDIS_PORT:6379}
       # 数据库索引
-      database: 0
+      database: ${REDIS_DATABASE:0}
       # 密码
-      password:
+      password: ${REDIS_PASSWORD:}
       # 连接超时时间
       timeout: 10s
       lettuce:
@@ -97,7 +97,7 @@ token:
   # 令牌自定义标识
   header: Authorization
   # 令牌密钥
-  secret: abcdefghijklmnopqrstuvwxyz
+  secret: ${TOKEN_SECRET:abcdefghijklmnopqrstuvwxyz}
   # 令牌有效期（默认30分钟）
   expireTime: 30
 
@@ -132,18 +132,18 @@ springdoc:
 
 cos:
   client:
-    host: https://picture-1402300216.cos.ap-guangzhou.myqcloud.com
-    secretId: AKIDvPuLciiVpz0oR5d4Qm8Vs562nPp382mM
-    secretKey: UcEkEakiT9g4IKBvwxujOrCNPTRFsKag
-    region: ap-guangzhou
-    bucket: picture-1402300216
+    host: ${COS_HOST:}
+    secretId: ${COS_SECRET_ID:}
+    secretKey: ${COS_SECRET_KEY:}
+    region: ${COS_REGION:}
+    bucket: ${COS_BUCKET:}
 
 # 防盗链配置
 referer:
   # 防盗链开关
   enabled: false
   # 允许的域名列表
-  allowed-domains: localhost,127.0.0.1,zsc.vip,www.zsc.vip
+  allowed-domains: ${REFERER_ALLOWED_DOMAINS:localhost,127.0.0.1,zsc.vip,www.zsc.vip}
 
 # 防止XSS攻击
 xss:

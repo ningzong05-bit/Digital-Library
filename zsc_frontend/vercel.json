@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build:prod",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/prod-api/:path*",
+      "destination": "https://ningzong-digital-library-api.onrender.com/:path*"
+    }
+  ]
+}
