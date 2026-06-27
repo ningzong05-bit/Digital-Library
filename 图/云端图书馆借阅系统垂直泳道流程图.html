@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>云端图书馆借阅系统垂直泳道流程图</title>
+  <style>
+    :root {
+      --lane-head: #9b8cf2;
+      --lane-line: #b9b9c6;
+      --node: #eeeafe;
+      --node-stroke: #2f3440;
+      --decision: #fff2c7;
+      --text: #1d2636;
+      --muted: #52658a;
+      --arrow: #2a2f38;
+      --bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f5fb;
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+
+    .page {
+      width: 1580px;
+      margin: 32px auto;
+      padding: 28px 34px 40px;
+      background: var(--bg);
+      box-shadow: 0 10px 30px rgba(25, 35, 70, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      text-align: center;
+      font-size: 28px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .chart-wrap {
+      width: 1510px;
+      overflow: auto;
+      border: 1px solid #c7c7d2;
+      background: #fff;
+    }
+
+    svg {
+      display: block;
+      width: 1510px;
+      height: 2100px;
+      background: #fff;
+    }
+
+    .lane-head {
+      fill: var(--lane-head);
+      stroke: #7d71d4;
+      stroke-width: 1.2;
+    }
+
+    .lane-title {
+      fill: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .lane-line {
+      stroke: var(--lane-line);
+      stroke-width: 1.2;
+    }
+
+    .node {
+      fill: var(--node);
+      stroke: var(--node-stroke);
+      stroke-width: 1.8;
+    }
+
+    .decision {
+      fill: var(--decision);
+      stroke: var(--node-stroke);
+      stroke-width: 1.8;
+    }
+
+    .node-text {
+      fill: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .flow {
+      fill: none;
+      stroke: var(--arrow);
+      stroke-width: 1.7;
+      marker-end: url(#arrow);
+    }
+
+    .label-bg {
+      fill: #fff;
+      stroke: #fff;
+      stroke-width: 8;
+      opacity: 0.94;
+    }
+
+    .label {
+      fill: var(--muted);
+      font-size: 18px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .caption {
+      margin-top: 12px;
+      text-align: center;
+      color: #374151;
+      font-size: 16px;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .page {
+        margin: 0;
+        box-shadow: none;
+        width: 100%;
+        padding: 0;
+      }
+
+      .chart-wrap {
+        border: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>云端图书馆借阅系统垂直泳道流程图</h1>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 1510 2100" role="img" aria-label="云端图书馆借阅系统垂直泳道流程图">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L9,3 L0,6 Z" fill="#2a2f38"></path>
+          </marker>
+        </defs>
+
+        <!-- 泳道表头 -->
+        <rect class="lane-head" x="0" y="0" width="302" height="42"></rect>
+        <rect class="lane-head" x="302" y="0" width="302" height="42"></rect>
+        <rect class="lane-head" x="604" y="0" width="302" height="42"></rect>
+        <rect class="lane-head" x="906" y="0" width="302" height="42"></rect>
+        <rect class="lane-head" x="1208" y="0" width="302" height="42"></rect>
+
+        <text class="lane-title" x="151" y="21">读者</text>
+        <text class="lane-title" x="453" y="21">前端页面</text>
+        <text class="lane-title" x="755" y="21">后端接口</text>
+        <text class="lane-title" x="1057" y="21">业务服务</text>
+        <text class="lane-title" x="1359" y="21">馆员与系统管理员</text>
+
+        <!-- 泳道分隔线 -->
+        <line class="lane-line" x1="0" y1="42" x2="0" y2="2100"></line>
+        <line class="lane-line" x1="302" y1="42" x2="302" y2="2100"></line>
+        <line class="lane-line" x1="604" y1="42" x2="604" y2="2100"></line>
+        <line class="lane-line" x1="906" y1="42" x2="906" y2="2100"></line>
+        <line class="lane-line" x1="1208" y1="42" x2="1208" y2="2100"></line>
+        <line class="lane-line" x1="1510" y1="42" x2="1510" y2="2100"></line>
+
+        <!-- 登录与首页 -->
+        <rect class="node" x="62" y="88" width="190" height="54"></rect>
+        <text class="node-text" x="157" y="115">打开系统进入首页</text>
+
+        <rect class="node" x="342" y="88" width="222" height="58"></rect>
+        <text class="node-text" x="453" y="107">首页与登录页面</text>
+        <text class="node-text" x="453" y="129">展示登录和检索入口</text>
+
+        <rect class="node" x="647" y="88" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="107">调用登录接口</text>
+        <text class="node-text" x="755" y="129">校验账号并签发令牌</text>
+
+        <rect class="node" x="946" y="88" width="222" height="58"></rect>
+        <text class="node-text" x="1057" y="107">认证服务</text>
+        <text class="node-text" x="1057" y="129">保存登录凭证和权限</text>
+
+        <rect class="node" x="342" y="205" width="222" height="58"></rect>
+        <text class="node-text" x="453" y="224">保存登录凭证</text>
+        <text class="node-text" x="453" y="246">生成角色菜单路由</text>
+
+        <!-- 图书检索 -->
+        <rect class="node" x="62" y="325" width="190" height="54"></rect>
+        <text class="node-text" x="157" y="352">线上检索图书</text>
+
+        <rect class="node" x="342" y="325" width="222" height="58"></rect>
+        <text class="node-text" x="453" y="344">图书检索页面</text>
+        <text class="node-text" x="453" y="366">书名/作者/分类筛选</text>
+
+        <rect class="node" x="647" y="325" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="344">查询图书列表</text>
+        <text class="node-text" x="755" y="366">返回馆藏和可借状态</text>
+
+        <rect class="node" x="946" y="325" width="222" height="58"></rect>
+        <text class="node-text" x="1057" y="344">图书服务</text>
+        <text class="node-text" x="1057" y="366">查询图书 / 分类 / 库存</text>
+
+        <!-- 线上借阅或排队 -->
+        <polygon class="decision" points="157,480 252,540 157,600 62,540"></polygon>
+        <text class="node-text" x="157" y="529">是否有</text>
+        <text class="node-text" x="157" y="551">剩余馆藏？</text>
+
+        <rect class="node" x="342" y="500" width="222" height="58"></rect>
+        <text class="node-text" x="453" y="519">图书详情页面</text>
+        <text class="node-text" x="453" y="541">选择自取或同城邮寄</text>
+
+        <rect class="node" x="647" y="500" width="216" height="72"></rect>
+        <text class="node-text" x="755" y="519">提交线上借书</text>
+        <text class="node-text" x="755" y="541">校验年费/押金</text>
+        <text class="node-text" x="755" y="563">市内地址/寄送次数</text>
+
+        <rect class="node" x="946" y="500" width="222" height="72"></rect>
+        <text class="node-text" x="1057" y="519">借阅服务</text>
+        <text class="node-text" x="1057" y="541">锁定馆藏</text>
+        <text class="node-text" x="1057" y="563">生成借书订单</text>
+
+        <rect class="node" x="647" y="650" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="669">加入排队队列</text>
+        <text class="node-text" x="755" y="691">返回人数和预计日期</text>
+
+        <rect class="node" x="946" y="650" width="222" height="58"></rect>
+        <text class="node-text" x="1057" y="669">排队服务</text>
+        <text class="node-text" x="1057" y="691">排到自动生成订单</text>
+
+        <rect class="node" x="1262" y="585" width="205" height="58"></rect>
+        <text class="node-text" x="1364.5" y="604">系统通知馆员</text>
+        <text class="node-text" x="1364.5" y="626">待自取或待寄出</text>
+
+        <!-- 办理线上借阅 -->
+        <rect class="node" x="647" y="790" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="809">查询自动借阅订单</text>
+        <text class="node-text" x="755" y="831">返回待自取/待寄出</text>
+
+        <polygon class="decision" points="1364,805 1464,865 1364,925 1264,865"></polygon>
+        <text class="node-text" x="1364" y="854">收发货是否</text>
+        <text class="node-text" x="1364" y="876">异常？</text>
+
+        <rect class="node" x="1262" y="1000" width="205" height="58"></rect>
+        <text class="node-text" x="1364.5" y="1019">无异常：自取确认</text>
+        <text class="node-text" x="1364.5" y="1041">或登记寄出日</text>
+
+        <rect class="node" x="1262" y="1195" width="205" height="58"></rect>
+        <text class="node-text" x="1364.5" y="1214">异常：暂停订单</text>
+        <text class="node-text" x="1364.5" y="1236">联系读者处理</text>
+
+        <rect class="node" x="647" y="1000" width="216" height="72"></rect>
+        <text class="node-text" x="755" y="1019">提交借出结果</text>
+        <text class="node-text" x="755" y="1041">馆方寄出/自取计期</text>
+        <text class="node-text" x="755" y="1063">减少可借数量</text>
+
+        <rect class="node" x="647" y="1195" width="216" height="72"></rect>
+        <text class="node-text" x="755" y="1214">提交异常结果</text>
+        <text class="node-text" x="755" y="1236">更新订单状态</text>
+        <text class="node-text" x="755" y="1258">通知读者查看</text>
+
+        <!-- 借阅记录与还书方式 -->
+        <rect class="node" x="342" y="1375" width="222" height="58"></rect>
+        <text class="node-text" x="453" y="1394">我的借阅页面</text>
+        <text class="node-text" x="453" y="1416">显示截止日期和状态</text>
+
+        <rect class="node" x="647" y="1375" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="1394">查询借阅记录</text>
+        <text class="node-text" x="755" y="1416">返回最晚归还/寄出日</text>
+
+        <rect class="node" x="62" y="1515" width="190" height="58"></rect>
+        <text class="node-text" x="157" y="1534">读者准备还书</text>
+        <text class="node-text" x="157" y="1556">选择还书方式</text>
+
+        <polygon class="decision" points="453,1490 548,1548 453,1606 358,1548"></polygon>
+        <text class="node-text" x="453" y="1537">是否邮寄</text>
+        <text class="node-text" x="453" y="1559">还书？</text>
+
+        <rect class="node" x="647" y="1515" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="1534">提交寄回信息</text>
+        <text class="node-text" x="755" y="1556">到付并记用户寄出日</text>
+
+        <rect class="node" x="946" y="1515" width="222" height="58"></rect>
+        <text class="node-text" x="1057" y="1534">配送与借阅服务</text>
+        <text class="node-text" x="1057" y="1556">按用户寄出日判期</text>
+
+        <!-- 归还与逾期 -->
+        <rect class="node" x="62" y="1705" width="190" height="58"></rect>
+        <text class="node-text" x="157" y="1724">读者到馆还书</text>
+        <text class="node-text" x="157" y="1746">交给图书管理员</text>
+
+        <rect class="node" x="1262" y="1705" width="205" height="58"></rect>
+        <text class="node-text" x="1364.5" y="1724">馆员验收还书</text>
+        <text class="node-text" x="1364.5" y="1746">收件或到馆验收</text>
+
+        <rect class="node" x="647" y="1705" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="1724">提交还书结果</text>
+        <text class="node-text" x="755" y="1746">恢复可借数量</text>
+
+        <polygon class="decision" points="1057,1690 1154,1748 1057,1806 960,1748"></polygon>
+        <text class="node-text" x="1057" y="1737">是否逾期</text>
+        <text class="node-text" x="1057" y="1759">或损坏？</text>
+
+        <rect class="node" x="647" y="1890" width="216" height="58"></rect>
+        <text class="node-text" x="755" y="1909">生成赔偿/扣押金</text>
+        <text class="node-text" x="755" y="1931">更新读者状态</text>
+
+        <rect class="node" x="342" y="1890" width="222" height="58"></rect>
+        <text class="node-text" x="453" y="1909">读者查看处理结果</text>
+        <text class="node-text" x="453" y="1931">完成归还流程</text>
+
+        <!-- 连线：登录 -->
+        <path class="flow" d="M252 115 L342 115"></path>
+        <path class="flow" d="M564 117 L647 117"></path>
+        <path class="flow" d="M863 117 L946 117"></path>
+        <path class="flow" d="M1057 146 L1057 234 L564 234"></path>
+        <path class="flow" d="M453 263 L453 300 L282 300 L282 352 L252 352"></path>
+
+        <!-- 连线：检索 -->
+        <path class="flow" d="M252 352 L342 352"></path>
+        <path class="flow" d="M564 354 L647 354"></path>
+        <path class="flow" d="M863 354 L946 354"></path>
+        <path class="flow" d="M1057 383 L1057 430 L157 430 L157 480"></path>
+
+        <!-- 连线：线上借阅与排队分支 -->
+        <path class="flow" d="M252 540 L300 540 L300 529 L342 529"></path>
+        <rect class="label-bg" x="274" y="503" width="62" height="28"></rect>
+        <text class="label" x="305" y="518">可借</text>
+        <path class="flow" d="M564 529 L647 529"></path>
+        <path class="flow" d="M863 529 L946 529"></path>
+        <path class="flow" d="M1057 572 L1057 614 L1262 614"></path>
+
+        <path class="flow" d="M157 600 L157 680 L647 680"></path>
+        <rect class="label-bg" x="208" y="645" width="82" height="28"></rect>
+        <text class="label" x="249" y="660">不可借</text>
+        <path class="flow" d="M863 679 L946 679"></path>
+        <path class="flow" d="M1168 679 L1215 679 L1215 614 L1262 614"></path>
+
+        <!-- 连线：馆员办理 -->
+        <path class="flow" d="M1262 614 L1180 614 L1180 819 L863 819"></path>
+        <path class="flow" d="M863 819 L1160 819 L1160 865 L1264 865"></path>
+        <path class="flow" d="M1364 925 L1364 1000"></path>
+        <rect class="label-bg" x="1384" y="950" width="62" height="28"></rect>
+        <text class="label" x="1415" y="965">无异常</text>
+        <path class="flow" d="M1262 1029 L1060 1029 L1060 1036 L863 1036"></path>
+        <path class="flow" d="M1464 865 L1490 865 L1490 1224 L1467 1224"></path>
+        <rect class="label-bg" x="1408" y="1112" width="82" height="28"></rect>
+        <text class="label" x="1449" y="1127">有异常</text>
+        <path class="flow" d="M1262 1224 L1060 1224 L1060 1231 L863 1231"></path>
+
+        <!-- 连线：借阅记录与还书方式 -->
+        <path class="flow" d="M647 1036 L525 1036 L525 1328 L453 1328 L453 1375"></path>
+        <path class="flow" d="M564 1404 L647 1404"></path>
+        <path class="flow" d="M755 1433 L755 1462 L157 1462 L157 1515"></path>
+        <path class="flow" d="M252 1544 L305 1544 L305 1548 L358 1548"></path>
+        <path class="flow" d="M548 1548 L596 1548 L596 1544 L647 1544"></path>
+        <rect class="label-bg" x="574" y="1512" width="62" height="28"></rect>
+        <text class="label" x="605" y="1527">是</text>
+        <path class="flow" d="M863 1544 L946 1544"></path>
+        <path class="flow" d="M1057 1573 L1057 1668 L1364 1668 L1364 1705"></path>
+        <path class="flow" d="M453 1606 L453 1646 L157 1646 L157 1705"></path>
+        <rect class="label-bg" x="474" y="1612" width="62" height="28"></rect>
+        <text class="label" x="505" y="1627">否</text>
+
+        <!-- 连线：还书与逾期 -->
+        <path class="flow" d="M252 1734 L300 1734 L300 1668 L1364 1668 L1364 1705"></path>
+        <path class="flow" d="M1262 1734 L1208 1734 L1208 1748 L1154 1748"></path>
+        <path class="flow" d="M960 1748 L910 1748 L910 1734 L863 1734"></path>
+        <path class="flow" d="M647 1734 L590 1734 L590 1858 L453 1858 L453 1890"></path>
+        <rect class="label-bg" x="887" y="1705" width="62" height="28"></rect>
+        <text class="label" x="918" y="1720">否</text>
+        <path class="flow" d="M1057 1806 L1057 1919 L863 1919"></path>
+        <rect class="label-bg" x="1084" y="1838" width="62" height="28"></rect>
+        <text class="label" x="1115" y="1853">是</text>
+        <path class="flow" d="M647 1919 L564 1919"></path>
+      </svg>
+    </div>
+        <p class="caption">图：云端图书馆借阅系统垂直泳道流程图</p>
+  </main>
+</body>
+</html>
