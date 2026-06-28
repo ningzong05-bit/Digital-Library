@@ -2,6 +2,7 @@ package com.zsc.framework.web.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import com.zsc.common.utils.http.UserAgentUtils;
 import com.zsc.common.utils.ip.AddressUtils;
 import com.zsc.common.utils.ip.IpUtils;
 import com.zsc.common.utils.uuid.IdUtils;
+import com.zsc.system.service.ISysUserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -55,6 +57,12 @@ public class TokenService
     @Autowired
     private RedisCache redisCache;
 
+    @Autowired
+    private ISysUserService userService;
+
+    @Autowired
+    private SysPermissionService permissionService;
+
     /**
      * 获取用户身份信息
      * 
@@ -73,7 +81,12 @@ public class TokenService
                 String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
                 String userKey = getTokenKey(uuid);
                 LoginUser user = redisCache.getCacheObject(userKey);
-                return user;
+                if (user != null)
+                {
+                    return user;
+                }
+                String username = (String) claims.get(Constants.JWT_USERNAME);
+                return createLoginUserFromUsername(username, uuid);
             }
             catch (Exception e)
             {
@@ -118,7 +131,6 @@ public class TokenService
         LoginUser cacheUser = createCacheUser(loginUser);
         cacheUser.setToken(token);
         setUserAgent(cacheUser);
-        refreshToken(cacheUser);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.LOGIN_USER_KEY, token);
@@ -144,6 +156,25 @@ public class TokenService
         user.setLoginDate(source.getLoginDate());
         user.setPwdUpdateDate(source.getPwdUpdateDate());
         return new LoginUser(loginUser.getUserId(), loginUser.getDeptId(), user, loginUser.getPermissions());
+    }
+
+    private LoginUser createLoginUserFromUsername(String username, String token)
+    {
+        if (StringUtils.isEmpty(username))
+        {
+            return null;
+        }
+        SysUser user = userService.selectUserByUserName(username);
+        if (user == null)
+        {
+            return null;
+        }
+        Set<String> permissions = permissionService.getMenuPermission(user);
+        LoginUser loginUser = new LoginUser(user.getUserId(), user.getDeptId(), user, permissions);
+        loginUser.setToken(token);
+        loginUser.setLoginTime(System.currentTimeMillis());
+        loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
+        return loginUser;
     }
 
     /**
