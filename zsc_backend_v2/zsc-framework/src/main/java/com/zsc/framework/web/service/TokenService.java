@@ -3,6 +3,7 @@ package com.zsc.framework.web.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -35,6 +36,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class TokenService
 {
     private static final Logger log = LoggerFactory.getLogger(TokenService.class);
+
+    private static final Map<String, String> TOKEN_USERS = new ConcurrentHashMap<>();
 
     // 令牌自定义标识
     @Value("${token.header}")
@@ -76,6 +79,11 @@ public class TokenService
         {
             try
             {
+                String cachedUsername = TOKEN_USERS.get(token);
+                if (StringUtils.isNotEmpty(cachedUsername))
+                {
+                    return createLoginUserFromUsername(cachedUsername, token);
+                }
                 Claims claims = parseToken(token);
                 // 解析对应的权限以及用户信息
                 String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
@@ -103,6 +111,11 @@ public class TokenService
     {
         if (StringUtils.isNotNull(loginUser) && StringUtils.isNotEmpty(loginUser.getToken()))
         {
+            if (TOKEN_USERS.containsKey(loginUser.getToken()))
+            {
+                TOKEN_USERS.put(loginUser.getToken(), loginUser.getUsername());
+                return;
+            }
             refreshToken(loginUser);
         }
     }
@@ -114,6 +127,7 @@ public class TokenService
     {
         if (StringUtils.isNotEmpty(token))
         {
+            TOKEN_USERS.remove(token);
             String userKey = getTokenKey(token);
             redisCache.deleteObject(userKey);
         }
@@ -128,14 +142,8 @@ public class TokenService
     public String createToken(LoginUser loginUser)
     {
         String token = IdUtils.fastUUID();
-        LoginUser cacheUser = createCacheUser(loginUser);
-        cacheUser.setToken(token);
-        setUserAgent(cacheUser);
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(Constants.LOGIN_USER_KEY, token);
-        claims.put(Constants.JWT_USERNAME, cacheUser.getUsername());
-        return createToken(claims);
+        TOKEN_USERS.put(token, loginUser.getUsername());
+        return token;
     }
 
     private LoginUser createCacheUser(LoginUser loginUser)
@@ -185,6 +193,10 @@ public class TokenService
      */
     public void verifyToken(LoginUser loginUser)
     {
+        if (TOKEN_USERS.containsKey(loginUser.getToken()))
+        {
+            return;
+        }
         long expireTime = loginUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
         if (expireTime - currentTime <= MILLIS_MINUTE_TWENTY)
@@ -258,6 +270,11 @@ public class TokenService
      */
     public String getUsernameFromToken(String token)
     {
+        String username = TOKEN_USERS.get(token);
+        if (StringUtils.isNotEmpty(username))
+        {
+            return username;
+        }
         Claims claims = parseToken(token);
         return claims.getSubject();
     }
