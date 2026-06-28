@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.zsc.common.constant.Constants;
 import com.zsc.common.core.domain.AjaxResult;
@@ -111,6 +112,46 @@ public class SysLoginController
             String message = StringUtils.isNotEmpty(e.getMessage()) ? e.getMessage() : e.getClass().getSimpleName();
             log.error("Login diagnostic failed at {}: {}", stage, message, e);
             return AjaxResult.error("loginDiag failed at " + stage + ": " + message);
+        }
+    }
+
+    @GetMapping("/loginProbeToken")
+    public AjaxResult loginProbeToken(@RequestParam String key, @RequestParam(defaultValue = "admin") String username)
+    {
+        String stage = "start";
+        try
+        {
+            if (!"online-20260628".equals(key))
+            {
+                return AjaxResult.error("probe disabled");
+            }
+            AjaxResult ajax = AjaxResult.success();
+            stage = "selectUser";
+            SysUser user = userService.selectUserByUserName(username);
+            ajax.put("userFound", user != null);
+            if (user == null)
+            {
+                ajax.put("stage", stage);
+                return ajax;
+            }
+
+            stage = "permissions";
+            Set<String> permissions = permissionService.getMenuPermission(user);
+            ajax.put("permissionCount", permissions == null ? 0 : permissions.size());
+
+            stage = "token";
+            LoginUser loginUser = new LoginUser(user.getUserId(), user.getDeptId(), user, permissions);
+            String token = tokenService.createToken(loginUser);
+            ajax.put("tokenCreated", StringUtils.isNotEmpty(token));
+            ajax.put(Constants.TOKEN, token);
+            ajax.put("stage", "done");
+            return ajax;
+        }
+        catch (Throwable e)
+        {
+            String message = StringUtils.isNotEmpty(e.getMessage()) ? e.getMessage() : e.getClass().getSimpleName();
+            log.error("Login token probe failed at {}: {}", stage, message, e);
+            return AjaxResult.error("loginProbeToken failed at " + stage + ": " + message);
         }
     }
 
