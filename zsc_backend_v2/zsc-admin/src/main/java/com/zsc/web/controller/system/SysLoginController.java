@@ -25,6 +25,7 @@ import com.zsc.framework.web.service.SysPermissionService;
 import com.zsc.framework.web.service.TokenService;
 import com.zsc.system.service.ISysConfigService;
 import com.zsc.system.service.ISysMenuService;
+import com.zsc.system.service.ISysUserService;
 
 @RestController
 public class SysLoginController
@@ -46,6 +47,9 @@ public class SysLoginController
     @Autowired
     private ISysConfigService configService;
 
+    @Autowired
+    private ISysUserService userService;
+
     @PostMapping("/login")
     public AjaxResult login(@RequestBody LoginBody loginBody)
     {
@@ -62,6 +66,51 @@ public class SysLoginController
             String message = StringUtils.isNotEmpty(e.getMessage()) ? e.getMessage() : e.getClass().getSimpleName();
             log.error("Login request failed: {}", message, e);
             return AjaxResult.error(message);
+        }
+    }
+
+    @PostMapping("/loginDiag")
+    public AjaxResult loginDiag(@RequestBody LoginBody loginBody)
+    {
+        String stage = "start";
+        try
+        {
+            AjaxResult ajax = AjaxResult.success();
+            stage = "selectUser";
+            SysUser user = userService.selectUserByUserName(loginBody.getUsername());
+            ajax.put("userFound", user != null);
+            if (user == null)
+            {
+                ajax.put("stage", stage);
+                return ajax;
+            }
+
+            stage = "checkPassword";
+            boolean passwordMatches = SecurityUtils.matchesPassword(loginBody.getPassword(), user.getPassword());
+            ajax.put("passwordMatches", passwordMatches);
+            if (!passwordMatches)
+            {
+                ajax.put("stage", stage);
+                return ajax;
+            }
+
+            stage = "permissions";
+            Set<String> permissions = permissionService.getMenuPermission(user);
+            ajax.put("permissionCount", permissions == null ? 0 : permissions.size());
+
+            stage = "token";
+            LoginUser loginUser = new LoginUser(user.getUserId(), user.getDeptId(), user, permissions);
+            String token = tokenService.createToken(loginUser);
+            ajax.put("tokenCreated", StringUtils.isNotEmpty(token));
+            ajax.put(Constants.TOKEN, token);
+            ajax.put("stage", "done");
+            return ajax;
+        }
+        catch (Throwable e)
+        {
+            String message = StringUtils.isNotEmpty(e.getMessage()) ? e.getMessage() : e.getClass().getSimpleName();
+            log.error("Login diagnostic failed at {}: {}", stage, message, e);
+            return AjaxResult.error("loginDiag failed at " + stage + ": " + message);
         }
     }
 
