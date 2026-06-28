@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.zsc.common.constant.CacheConstants;
 import com.zsc.common.constant.Constants;
+import com.zsc.common.core.domain.entity.SysUser;
 import com.zsc.common.core.domain.model.LoginUser;
 import com.zsc.common.core.redis.RedisCache;
 import com.zsc.common.utils.ServletUtils;
@@ -114,14 +115,35 @@ public class TokenService
     public String createToken(LoginUser loginUser)
     {
         String token = IdUtils.fastUUID();
-        loginUser.setToken(token);
-        setUserAgent(loginUser);
-        refreshToken(loginUser);
+        LoginUser cacheUser = createCacheUser(loginUser);
+        cacheUser.setToken(token);
+        setUserAgent(cacheUser);
+        refreshToken(cacheUser);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.LOGIN_USER_KEY, token);
-        claims.put(Constants.JWT_USERNAME, loginUser.getUsername());
+        claims.put(Constants.JWT_USERNAME, cacheUser.getUsername());
         return createToken(claims);
+    }
+
+    private LoginUser createCacheUser(LoginUser loginUser)
+    {
+        SysUser source = loginUser.getUser();
+        SysUser user = new SysUser();
+        user.setUserId(source.getUserId());
+        user.setDeptId(source.getDeptId());
+        user.setUserName(source.getUserName());
+        user.setNickName(source.getNickName());
+        user.setEmail(source.getEmail());
+        user.setPhonenumber(source.getPhonenumber());
+        user.setSex(source.getSex());
+        user.setAvatar(source.getAvatar());
+        user.setStatus(source.getStatus());
+        user.setDelFlag(source.getDelFlag());
+        user.setLoginIp(source.getLoginIp());
+        user.setLoginDate(source.getLoginDate());
+        user.setPwdUpdateDate(source.getPwdUpdateDate());
+        return new LoginUser(loginUser.getUserId(), loginUser.getDeptId(), user, loginUser.getPermissions());
     }
 
     /**
